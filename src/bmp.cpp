@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <span>
 #include "bmp.h"
 
 std::vector<std::byte> Bmp::load_image(const std::filesystem::path &image_path) {
@@ -11,7 +12,7 @@ std::vector<std::byte> Bmp::load_image(const std::filesystem::path &image_path) 
         if (!image) { return {}; }
         auto const size = image.tellg();
         image.seekg({}, std::ios::beg);
-        std::vector<std::byte> ret(static_cast<std::size_t>(size));
+        std::vector<std::byte> ret(size);
         image.read(reinterpret_cast<char *>(ret.data()), size);
         return ret;
     }
@@ -24,7 +25,7 @@ Bmp::Bmp(const std::filesystem::path &image_path) {
             throw std::runtime_error("Invalid file type.\n");
 
         }
-        auto image = load_image(image_path);
+        auto image = std::move(load_image(image_path));
         if (!image.empty()) {
             std::copy(image.begin(), image.begin() + header_size, reinterpret_cast<std::byte *>(&header));
             pixel_data.resize(image.size() - header.offset);
@@ -60,11 +61,13 @@ std::filesystem::path Bmp::write_image(const std::filesystem::path &path) {
         if (path.extension() == ".bmp") {
             std::ofstream out{path, std::ios::binary};
             if (out.is_open()) {
-                out.write(reinterpret_cast<char*>(&header), sizeof(header));
-                std::vector<std::byte> offset_fill (header.offset - sizeof(header));
+                out.write(reinterpret_cast<char *>(&header), sizeof(header));
+                std::vector<std::byte> offset_fill(header.offset - sizeof(header));
                 std::fill(offset_fill.begin(), offset_fill.end(), std::byte{0x00});
-                out.write(reinterpret_cast<char*>(offset_fill.data()),header.offset - sizeof(header) );
-                out.write(reinterpret_cast<char*>(pixel_data.data()), pixel_data.size());
+                out.write(reinterpret_cast<char *>(offset_fill.data()), header.offset - sizeof(header));
+                auto pixels = std::span< const std::byte>(pixel_data);
+                out.write(reinterpret_cast<const char *>(pixels.data()), pixels.size());
+                return path;
             } else {
                 throw std::runtime_error("File " + path.string() + " failed to open.\n");
             }

@@ -10,6 +10,7 @@
 #include <vector>
 #include <fstream>
 #include "bmp.h"
+#include <omp.h>
 
 
 class ImageMerger{
@@ -29,6 +30,11 @@ class ImageMerger{
 public:
     std::filesystem::path merge_images(const std::filesystem::path &first, const std::filesystem::path &second,
                                        const std::filesystem::path &out_path, float weight = 0.5f);
+    std::filesystem::path merge_images_cache(const std::filesystem::path &first, const std::filesystem::path &second,
+                                       const std::filesystem::path &out_path, float weight = 0.5f);
+    std::filesystem::path merge_images_openmp(const std::filesystem::path &first, const std::filesystem::path &second,
+                                       const std::filesystem::path &out_path, float weight = 0.5f);
 
-
+    std::filesystem::path merge_images_optimized(const std::filesystem::path &first, const std::filesystem::path &second,
+                                       const std::filesystem::path &out_path, float weight = 0.5f);
 };
