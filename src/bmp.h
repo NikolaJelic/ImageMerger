@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <vector>
 #include <filesystem>
-
+#include <omp.h>
 
 class Bmp {
 #pragma pack(push, 1)
@@ -44,5 +44,9 @@ public:
     [[nodiscard]] const std::vector<std::byte> &getPixelData() const;
     void setPixelData(const std::vector<std::byte> &pixelData);
 
+    [[nodiscard]] std::vector<std::vector<std::byte>>get_2d_pixel_data()const;
+
     std::filesystem::path write_image(std::filesystem::path const& path);
+
+    void set_2d_pixel_data(const std::vector<std::vector<std::byte>> &data);
 };

@@ -1,3 +1,5 @@
 /cmake-build-debug/
 /.idea/
 /resources/out/
+/cmake-build-release
+callgrind*

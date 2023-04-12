@@ -6,6 +6,7 @@
 #include <span>
 #include "bmp.h"
 
+
 std::vector<std::byte> Bmp::load_image(const std::filesystem::path &image_path) {
     if (is_regular_file(image_path)) {
         auto image = std::ifstream{image_path, std::ios::binary | std::ios::ate};
@@ -65,7 +66,7 @@ std::filesystem::path Bmp::write_image(const std::filesystem::path &path) {
                 std::vector<std::byte> offset_fill(header.offset - sizeof(header));
                 std::fill(offset_fill.begin(), offset_fill.end(), std::byte{0x00});
                 out.write(reinterpret_cast<char *>(offset_fill.data()), header.offset - sizeof(header));
-                auto pixels = std::span< const std::byte>(pixel_data);
+                auto pixels = std::span<const std::byte>(std::move(pixel_data));
                 out.write(reinterpret_cast<const char *>(pixels.data()), pixels.size());
                 return path;
             } else {
@@ -78,4 +79,28 @@ std::filesystem::path Bmp::write_image(const std::filesystem::path &path) {
         std::cerr << e.what() << std::endl;
         return {};
     }
+}
+
+std::vector<std::vector<std::byte>> Bmp::get_2d_pixel_data() const {
+    std::vector<std::vector<std::byte>> ret(header.height, std::vector<std::byte>(header.width));
+//#pragma omp parallel for
+    for (int i = 0; i < header.height; ++i) {
+        for (int j = 0; j < header.width; ++j) {
+            ret[i][j] = pixel_data[i * header.width + j];
+        }
+    }
+    return ret;
+
+}
+
+void Bmp::set_2d_pixel_data(std::vector<std::vector<std::byte>> const &data) {
+
+    std::vector<std::byte> ret(data.size() * data[0].size());
+//#pragma omp parallel for
+    for (int i = 0; i < data.size(); ++i) {
+        for (int j = 0; j < data[0].size(); ++j) {
+            ret[i * data[0].size() + j] = data[i][j];
+        }
+    }
+    pixel_data = ret;
 }
