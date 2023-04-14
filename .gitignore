@@ -3,3 +3,4 @@
 /resources/out/
 /cmake-build-release
 callgrind*
+cachegrind*

@@ -16,23 +16,26 @@
 
 class ImageMerger {
 
+    std::vector<std::vector<std::byte>> get_2d_pixels(std::vector<std::byte> const& pixels, int height );
+    std::vector<std::byte> get_vec_pixels(std::vector<std::vector<std::byte>> const& pixels);
+
 public:
     /// merger value: 0=max, 1=average
-    const std::vector<std::byte> &
+    const std::vector<std::byte>
     merge_images(int merger, std::filesystem::path &first, const std::filesystem::path &second,
                  const std::filesystem::path &out_path, float weight = 0.5f);
 
     /// merger value: 0=max, 1=average
-    const std::vector<std::byte> &
+    const std::vector<std::byte>
     merge_images_cache(int merger, const std::filesystem::path &first, const std::filesystem::path &second,
                        const std::filesystem::path &out_path, float weight = 0.5f);
 
     /// merger value: 0=max, 1=average
-    const std::vector<std::byte> &
+    const std::vector<std::byte>
     merge_images_openmp(int merger, const std::filesystem::path &first, const std::filesystem::path &second,
                         const std::filesystem::path &out_path, float weight = 0.5f);
 
-    const std::vector<std::byte> &
+    const std::vector<std::byte>
     merge_images_optimized(int merger, const std::filesystem::path &first, const std::filesystem::path &second,
                            const std::filesystem::path &out_path, float weight);
 };

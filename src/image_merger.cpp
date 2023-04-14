@@ -9,7 +9,7 @@
 #include <random>
 #include "image_merger.h"
 
-const std::vector<std::byte> &
+const std::vector<std::byte>
 ImageMerger::merge_images(int merger, std::filesystem::path &first, const std::filesystem::path &second,
                           const std::filesystem::path &out_path, float weight) {
     try {
@@ -21,28 +21,15 @@ ImageMerger::merge_images(int merger, std::filesystem::path &first, const std::f
             throw std::runtime_error("Images aren't matching.\n");
         } else {
             auto out_header = first_image.getHeader();
-            auto const& first_vector = first_image.getPixelData();
-            auto const& second_vector = second_image.getPixelData();
-            int const height = first_image.getHeader().height;
-            int const width  = first_vector.size()/height;
+            auto const &first_vector = first_image.getPixelData();
+            auto const &second_vector = second_image.getPixelData();
+            size_t const height = first_image.getHeader().height;
+            size_t const width = first_vector.size() / height;
 
-            std::cout << "header loaded\n";
-            std::vector<std::vector<std::byte>> first_array (height, std::vector<std::byte>(width));
-            std::vector<std::vector<std::byte>> second_array  (height, std::vector<std::byte>(width));
-            std::vector<std::vector<std::byte>> out_array  (height, std::vector<std::byte>(width));
+            auto first_array = get_2d_pixels(first_vector, height);
+            auto second_array = get_2d_pixels(second_vector, height);
 
-
-            std::cout << "vec: " << first_vector.size();
-
-            for(int i = 0; i < height; ++i){
-                for(int j = 0; j <  width; ++j){
-                    first_array[i][j] = first_vector[ i * width + j];
-                    second_array[i][j] = second_vector[i * width + j];
-                }
-            }
-
-            std::cout << "array made\n";
-
+            std::vector<std::vector<std::byte>> out_array(height, std::vector<std::byte>(width));
 
 
             for (int j = 0; j < width; ++j) {
@@ -60,14 +47,7 @@ ImageMerger::merge_images(int merger, std::filesystem::path &first, const std::f
                 }
             }
 
-            std::vector<std::byte> out_vec(height * width);
-            std::cout <<  out_vec.size() << "  " << first_vector.size() << '\n';
-
-            for(int i = 0; i < height; ++i){
-                for(int j = 0; j <  width; ++j){
-                    out_vec[i * width + j] = out_array[i][j];
-                }
-            }
+           auto out_vec = get_vec_pixels(out_array);
 
 
             Bmp out{out_header, out_vec};
@@ -79,7 +59,7 @@ ImageMerger::merge_images(int merger, std::filesystem::path &first, const std::f
 }
 
 
-const std::vector<std::byte> &
+const std::vector<std::byte>
 ImageMerger::merge_images_cache(int merger, const std::filesystem::path &first, const std::filesystem::path &second,
                                 const std::filesystem::path &out_path, float weight) {
     try {
@@ -120,7 +100,7 @@ ImageMerger::merge_images_cache(int merger, const std::filesystem::path &first, 
 }
 
 
-const std::vector<std::byte> &
+const std::vector<std::byte>
 ImageMerger::merge_images_openmp(int merger, const std::filesystem::path &first, const std::filesystem::path &second,
                                  const std::filesystem::path &out_path, float weight) {
     try {
@@ -163,9 +143,9 @@ ImageMerger::merge_images_openmp(int merger, const std::filesystem::path &first,
 }
 
 
-const std::vector<std::byte> &
+const std::vector<std::byte>
 ImageMerger::merge_images_optimized(int merger, const std::filesystem::path &first, const std::filesystem::path &second,
-                                 const std::filesystem::path &out_path, float weight) {
+                                    const std::filesystem::path &out_path, float weight) {
     try {
         Bmp first_image{first};
         Bmp second_image{second};
@@ -182,10 +162,8 @@ ImageMerger::merge_images_optimized(int merger, const std::filesystem::path &fir
 
 
 #pragma omp parallel for
-
             for (int i = 0; i < first_pixel_data.size(); ++i) {
                 //change of access at() -> []
-
                 std::byte pixel{};
                 if (merger) {
                     pixel = std::byte(weight * std::to_integer<int>(first_pixel_data[i]) +
@@ -203,4 +181,32 @@ ImageMerger::merge_images_optimized(int merger, const std::filesystem::path &fir
         }
     } catch (std::exception &e) { std::cerr << e.what(); }
     return {};
+}
+
+std::vector<std::vector<std::byte>> ImageMerger::get_2d_pixels(const std::vector<std::byte> &pixels, int height) {
+
+    int const width = pixels.size() / height;
+    std::vector<std::vector<std::byte>> ret(height, std::vector<std::byte>(width));
+#pragma omp parallel for
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            ret[i][j] = pixels[i * width + j];
+        }
+    }
+
+    return ret;
+}
+
+std::vector<std::byte> ImageMerger::get_vec_pixels(const std::vector<std::vector<std::byte>> &pixels) {
+    std::size_t height = pixels.size();
+    std::size_t width = pixels[0].size();
+    std::vector<std::byte> ret(width * height);
+#pragma omp parallel for
+    for (size_t i = 0; i < height; ++i) {
+        for (size_t j = 0; j < width; ++j) {
+            ret[i * width + j] = pixels[i][j];
+        }
+    }
+    return ret;
+
 }
