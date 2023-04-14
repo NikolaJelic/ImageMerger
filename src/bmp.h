@@ -32,21 +32,50 @@ class Bmp {
     std::vector<std::byte> pixel_data{};
 
 #pragma pack(pop)
+
+/**
+ * Load an image from a file path into a vector of bytes.
+ *
+ * @param image_path The path of the image file to load.
+ * @return A vector of bytes representing the loaded image, or an empty vector if loading failed.
+ */
     std::vector<std::byte> load_image(std::filesystem::path const &image_path);
 
 public:
+    /**
+ * Constructs a BMP object by loading an image from a file.
+ *
+ * @param image_path The path of the BMP image file to load.
+ */
     explicit Bmp(std::filesystem::path const &image_path);
+
+    /**
+ * Constructs a BMP object with the given BMP header and pixel data.
+ *
+ * @param header The BMP header data.
+ * @param pixelData The pixel data.
+ */
     Bmp(const BmpHeader &header, const std::vector<std::byte> &pixelData);
 
+    /**
+ * Gets the BMP header data of the loaded image.
+ *
+ * @return A reference to the BMP header data.
+ */
     [[nodiscard]] const BmpHeader &getHeader() const;
-    void setHeader(const BmpHeader &header);
 
+/**
+ * Gets the pixel data of the loaded image.
+ *
+ * @return A reference to the vector of bytes representing the pixel data.
+ */
     [[nodiscard]] const std::vector<std::byte> &getPixelData() const;
-    void setPixelData(const std::vector<std::byte> &pixelData);
 
-    [[nodiscard]] std::vector<std::vector<std::byte>>get_2d_pixel_data()const;
-
-    std::filesystem::path write_image(std::filesystem::path const& path);
-
-    void set_2d_pixel_data(const std::vector<std::vector<std::byte>> &data);
+    /**
+ * Writes the BMP image to a file at the given path.
+ *
+ * @param path The path of the file to write the BMP image to.
+ * @return The path of the file that was written to, or an empty path if writing failed.
+ */
+    std::filesystem::path write_image(std::filesystem::path const &path);
 };

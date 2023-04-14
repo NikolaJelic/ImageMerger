@@ -42,17 +42,11 @@ const Bmp::BmpHeader &Bmp::getHeader() const {
     return header;
 }
 
-void Bmp::setHeader(const Bmp::BmpHeader &header) {
-    Bmp::header = header;
-}
 
 const std::vector<std::byte> &Bmp::getPixelData() const {
     return pixel_data;
 }
 
-void Bmp::setPixelData(const std::vector<std::byte> &pixelData) {
-    pixel_data = pixelData;
-}
 
 Bmp::Bmp(const Bmp::BmpHeader &header, const std::vector<std::byte> &pixelData) : header(header),
                                                                                   pixel_data(pixelData) {}
@@ -79,28 +73,4 @@ std::filesystem::path Bmp::write_image(const std::filesystem::path &path) {
         std::cerr << e.what() << std::endl;
         return {};
     }
-}
-
-std::vector<std::vector<std::byte>> Bmp::get_2d_pixel_data() const {
-    std::vector<std::vector<std::byte>> ret(header.height, std::vector<std::byte>(header.width));
-//#pragma omp parallel for
-    for (int i = 0; i < header.height; ++i) {
-        for (int j = 0; j < header.width; ++j) {
-            ret[i][j] = pixel_data[i * header.width + j];
-        }
-    }
-    return ret;
-
-}
-
-void Bmp::set_2d_pixel_data(std::vector<std::vector<std::byte>> const &data) {
-
-    std::vector<std::byte> ret(data.size() * data[0].size());
-//#pragma omp parallel for
-    for (int i = 0; i < data.size(); ++i) {
-        for (int j = 0; j < data[0].size(); ++j) {
-            ret[i * data[0].size() + j] = data[i][j];
-        }
-    }
-    pixel_data = ret;
 }
