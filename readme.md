@@ -307,7 +307,7 @@ valgrind  --branch-sim=yes --cache-sim=yes --tool=cachegrind ImageMerger impleme
 
 
 
-![](./resources/readme/chart.png)
+![](https://github.com/NikolaJelic/ImageMerger/blob/main/resources/readme/chart.png)
 
 
 
@@ -407,7 +407,7 @@ Osim razlika u dimenziji ulaza, vršena su mjerenja programa dobijenog sa i bez 
 
 
 
-![](./resources/readme/Vrijeme obrade ulaza dimenzija 2048x2048 sa i bez kompajlerskih optimizacija.png)
+![](https://github.com/NikolaJelic/ImageMerger/blob/main/resources/readme/2048_graph.png)
 
 ### Ulaz veličine 1024x1024 bez kompajlerskih optimizacija
 
@@ -463,7 +463,7 @@ Osim razlika u dimenziji ulaza, vršena su mjerenja programa dobijenog sa i bez 
 
 
 
-![](./resources/readme/Vrijeme obrade ulaza dimenzija 1024x1024 sa i bez kompajlerskih optimizacija.png)
+![](https://github.com/NikolaJelic/ImageMerger/blob/main/resources/readme/1024_graph.png)
 
 ### Ulaz veličine 512x512 bez kompajlerskih optimizacija
 
@@ -517,7 +517,7 @@ Osim razlika u dimenziji ulaza, vršena su mjerenja programa dobijenog sa i bez 
 
 
 
-![](./resources/readme/Vrijeme obrade ulaza dimenzija 512x512 sa i bez kompajlerskih optimizacija.png)
+![](https://github.com/NikolaJelic/ImageMerger/blob/main/resources/readme/512_graph.png)
 
 ### Ulaz veličine 256x256 bez kompajlerskih optimizacija
 
@@ -573,7 +573,7 @@ Osim razlika u dimenziji ulaza, vršena su mjerenja programa dobijenog sa i bez 
 
 
 
-![](./resources/readme/Vrijeme obrade ulaza dimenzija 256x256 sa i bez kompajlerskih optimizacija.png)
+![](https://github.com/NikolaJelic/ImageMerger/blob/main/resources/readme/256_graph.png)
 
 ## Zaključak
 
