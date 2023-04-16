@@ -1,8 +1,6 @@
-ARHITEKTURA RAČUNARA 2023
+
 
 ## Optimizacija algoritma - Stapanje slika uzimanjem prosječne ili maksimalne vrijednosti piksela
-
-Nikola Jelić 1165/20
 
 
 
@@ -609,4 +607,3 @@ Još neke optimizacije koje se izvršavaju su:
 Od kojih se veliki broj odnosi na optimizaciju iteracije kroz petlje.
 
 Sve ove optimizacije doprinose povećanju rezultujućeg izvršnog fajla, što se vidi po tome da kompajler sa `o0` optimizacijama generiše fajl veličine 726.9kB , dok sa uključenim `ofast` optimizacijama generiše fajl veličine 1MB što je značajan rast.
-
