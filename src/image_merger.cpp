@@ -5,7 +5,6 @@
 #include <iostream>
 #include <algorithm>
 #include <span>
-#include <numeric>
 #include <random>
 #include "image_merger.h"
 
@@ -18,6 +17,8 @@ ImageMerger::merge_images(int merger, const std::filesystem::path &first, const 
 
         if (first_image.getHeader().height != second_image.getHeader().height ||
             first_image.getHeader().width != second_image.getHeader().width) {
+            std::cout << first_image.getHeader().height << "  " << second_image.getHeader().height << "   "
+                      << first_image.getHeader().width << "  " << second_image.getHeader().width;
             throw std::runtime_error("Images aren't matching.\n");
         } else {
             auto out_header = first_image.getHeader();
@@ -32,8 +33,8 @@ ImageMerger::merge_images(int merger, const std::filesystem::path &first, const 
             std::vector<std::vector<std::byte>> out_array(height, std::vector<std::byte>(width));
 
 
-            for (int j = 0; j < width; ++j) {
-                for (int i = 0; i < height; ++i) {
+            for (size_t j = 0; j < width; ++j) {
+                for (size_t i = 0; i < height; ++i) {
                     std::byte pixel{};
                     if (merger) {
                         pixel = std::byte(weight * std::to_integer<int>(first_array[i][j]) +
@@ -131,7 +132,6 @@ ImageMerger::merge_images_openmp(int merger, const std::filesystem::path &first,
                             if (merger) {
                                 pixel = std::byte(weight * std::to_integer<int>(first_pixel_data[i][j]) +
                                                   (1 - weight) * std::to_integer<int>(second_pixel_data[i][j]));
-
                             } else {
                                 pixel = std::byte(std::max(std::to_integer<int>(first_pixel_data[i][j]),
                                                            std::to_integer<int>(second_pixel_data[i][j])));
@@ -142,6 +142,7 @@ ImageMerger::merge_images_openmp(int merger, const std::filesystem::path &first,
                 }
 
             }
+
             auto out_vec = get_vec_pixels(out_array);
 
             Bmp out{out_header, out_vec};

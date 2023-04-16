@@ -10,22 +10,22 @@
 class Bmp {
 #pragma pack(push, 1)
     struct BmpHeader {
-        uint16_t signature;
-        uint32_t file_size;
-        uint16_t reserved1;
-        uint16_t reserved2;
+        [[maybe_unused]] uint16_t signature;
+        [[maybe_unused]] uint32_t file_size;
+        [[maybe_unused]] uint16_t reserved1;
+        [[maybe_unused]] uint16_t reserved2;
         uint32_t offset;
-        uint32_t header_size;
+        [[maybe_unused]] uint32_t header_size;
         int32_t width;
         int32_t height;
-        uint16_t planes;
-        uint16_t bits_per_pixel;
-        uint32_t compression;
-        uint32_t image_size;
-        int32_t x_pixels_per_meter;
-        int32_t y_pixels_per_meter;
-        uint32_t colors_used;
-        uint32_t important_colors;
+        [[maybe_unused]] uint16_t planes;
+        [[maybe_unused]] uint16_t bits_per_pixel;
+        [[maybe_unused]] uint32_t compression;
+        [[maybe_unused]] uint32_t image_size;
+        [[maybe_unused]] int32_t x_pixels_per_meter;
+        [[maybe_unused]] int32_t y_pixels_per_meter;
+        [[maybe_unused]] uint32_t colors_used;
+        [[maybe_unused]] uint32_t important_colors;
     };
     const std::size_t header_size = 54;
     BmpHeader header{};

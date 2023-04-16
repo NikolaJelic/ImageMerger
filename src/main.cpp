@@ -1,7 +1,7 @@
 #include <iostream>
 #include "image_merger.h"
 #include "bmp.h"
-#include <functional>
+
 
 int main(int argc, char *argv[]) {
 
@@ -47,49 +47,27 @@ int main(int argc, char *argv[]) {
     ImageMerger merger{};
 
     int merge_val = (merge_method == "max") ? 0 : 1;
-
     auto start = std::chrono::high_resolution_clock::now();
-    merger.merge_images(merge_val, first_image, second_image, "../resources/out/test0.bmp", weight);
+
+
+    if (algorithm_version == "base") {
+        std::cout << merger.merge_images(merge_val, first_image, second_image, out_image, weight) << std::endl;
+    } else if (algorithm_version == "openmp") {
+        std::cout << merger.merge_images_openmp(merge_val, first_image, second_image, out_image, weight) << std::endl;
+    } else if (algorithm_version == "cache") {
+        std::cout << merger.merge_images_cache(merge_val, first_image, second_image, out_image, weight) << std::endl;
+    } else if (algorithm_version == "optimized") {
+        std::cout << merger.merge_images_optimized(merge_val, first_image, second_image, out_image, weight)
+                  << std::endl;
+    } else {
+        std::cout << "Entered argument <" << algorithm_version
+                  << "> is invalid. Supported algorithm versions are <base>, <openmp>, <cache> and <optimized>"
+                  << std::endl;
+    }
+
     auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed_time = duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << elapsed_time.count() << std::endl;
-    std::cout << "=======================================\n Cached:\n";
-    start = std::chrono::high_resolution_clock::now();
-    merger.merge_images_cache(merge_val, first_image, second_image, "../resources/out/test1.bmp", weight);
-    end = std::chrono::high_resolution_clock::now();
-    elapsed_time = duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << elapsed_time.count() << std::endl;
-    std::cout << "=======================================\n openmp:\n";
-    start = std::chrono::high_resolution_clock::now();
-    merger.merge_images_openmp(merge_val, first_image, second_image, "../resources/out/test2.bmp", weight);
-    end = std::chrono::high_resolution_clock::now();
-    elapsed_time = duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << elapsed_time.count() << std::endl;
-    std::cout << "=======================================\n Optimized\n";
-    start = std::chrono::high_resolution_clock::now();
-    merger.merge_images_optimized(1, first_image, second_image, "../resources/out/test1.bmp", weight);
-    end = std::chrono::high_resolution_clock::now();
-    elapsed_time = duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << elapsed_time.count() << std::endl;
-    std::cout << "=======================================\n \n";
+    auto elapsed_time = duration_cast<std::chrono::nanoseconds>(end - start);
+    std::cout << elapsed_time.count() / 1000000.0f << std::endl;
 
-
-
-    /*   if (algorithm_version == "base") {
-           std::cout << merger.merge_images(merge_val, first_image, second_image, out_image, weight) << std::endl;
-       } else if (algorithm_version == "openmp") {
-           std::cout << merger.merge_images_openmp(merge_val, first_image, second_image, out_image, weight)
-                     << std::endl;
-       } else if (algorithm_version == "cache") {
-           std::cout << merger.merge_images_cache(merge_val, first_image, second_image, out_image, weight)
-                     << std::endl;
-       } else {
-           std::cout << "Entered argument <" << algorithm_version
-                     << "> is invalid. Supported algorithm versions are <base>, <openmp>, <cache> and <optimized>"
-                     << std::endl;
-       }*/
-
-
-
-
+    return 0;
 }

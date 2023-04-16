@@ -26,7 +26,7 @@ Bmp::Bmp(const std::filesystem::path &image_path) {
             throw std::runtime_error("Invalid file type.\n");
 
         }
-        auto image = std::move(load_image(image_path));
+        auto image = load_image(image_path);
         if (!image.empty()) {
             std::copy(image.begin(), image.begin() + header_size, reinterpret_cast<std::byte *>(&header));
             pixel_data.resize(image.size() - header.offset);
